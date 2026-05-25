@@ -4,7 +4,7 @@ import { revalidatePath } from "next/cache";
 import { eq } from "drizzle-orm";
 import { z } from "zod";
 import { db } from "@/lib/db/client";
-import { merchants, MERCHANT_STATUS, type MerchantStatus } from "@/lib/db/schema";
+import { merchants, MERCHANT_STATUS } from "@/lib/db/schema";
 import { requireSession } from "@/lib/auth";
 
 const StatusSchema = z.enum(MERCHANT_STATUS);
@@ -30,6 +30,9 @@ export async function updateStatusAction(
   if (status === "merchant_active") {
     patch.merchantActiveAt = now;
   }
+  if (status === "delivery_pending") {
+    patch.deliveryRequestedAt = now;
+  }
   if (status === "delivered") {
     patch.deliveredAt = now;
   }
@@ -43,17 +46,17 @@ export async function updateStatusAction(
 
 export async function requestDeliveryAction(merchantId: string) {
   await requireSession();
+  const now = new Date();
   await db
     .update(merchants)
-    .set({ deliveryRequestedAt: new Date(), updatedAt: new Date() })
+    .set({
+      status: "delivery_pending",
+      deliveryRequestedAt: now,
+      updatedAt: now,
+    })
     .where(eq(merchants.id, merchantId));
   revalidatePath(`/merchants/${merchantId}`);
   revalidatePath("/dashboard");
-}
-
-export async function setStatus(
-  merchantId: string,
-  status: MerchantStatus,
-) {
-  return updateStatusAction(merchantId, status);
+  revalidatePath("/daftar");
+  revalidatePath("/peta");
 }

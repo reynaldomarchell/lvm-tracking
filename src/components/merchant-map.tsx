@@ -4,9 +4,14 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import L from "leaflet";
 import { MapContainer, Marker, Popup, TileLayer, useMap } from "react-leaflet";
-import { Crosshair } from "lucide-react";
+import { ArrowRight, Crosshair, Map as MapIcon } from "lucide-react";
+import { HiOutlineLocationMarker } from "react-icons/hi";
 import "leaflet/dist/leaflet.css";
-import { STATUS_PIN_COLOR, STATUS_SHORT } from "@/lib/constants";
+import {
+  STATUS_COLOR,
+  STATUS_PIN_COLOR,
+  STATUS_SHORT,
+} from "@/lib/constants";
 import { Button } from "@/components/ui/button";
 import type { Merchant } from "@/lib/db/schema";
 
@@ -85,21 +90,51 @@ export function MerchantMap({ merchants }: { merchants: Merchant[] }) {
           position={[m.lat, m.lng]}
           icon={pinIcon(STATUS_PIN_COLOR[m.status])}
         >
-          <Popup>
-            <div className="space-y-1 min-w-[160px]">
-              <p className="font-semibold text-slate-900">{m.name}</p>
-              <p className="text-xs text-slate-500">
-                {STATUS_SHORT[m.status]}
-              </p>
+          <Popup className="lvm-popup">
+            <div className="min-w-[220px] space-y-2.5">
+              <div className="flex items-start gap-2">
+                <div
+                  className="mt-1 size-2.5 rounded-full shrink-0"
+                  style={{ background: STATUS_PIN_COLOR[m.status] }}
+                />
+                <div className="min-w-0 flex-1">
+                  <p className="font-bold text-slate-900 leading-tight !mt-0 !mb-0">
+                    {m.name}
+                  </p>
+                  <span
+                    className={`inline-block mt-1 px-2 py-0.5 rounded-full text-[10px] font-medium border ${STATUS_COLOR[m.status]}`}
+                  >
+                    {STATUS_SHORT[m.status]}
+                  </span>
+                </div>
+              </div>
               {m.address && (
-                <p className="text-xs text-slate-600">{m.address}</p>
+                <p className="text-xs text-slate-600 leading-snug !my-0 flex items-start gap-1">
+                  <HiOutlineLocationMarker className="size-3.5 shrink-0 text-slate-400 mt-0.5" />
+                  <span>{m.address}</span>
+                </p>
               )}
-              <Link
-                href={`/merchants/${m.id}`}
-                className="inline-block text-xs font-medium text-blue-700 underline mt-1"
-              >
-                Buka detail →
-              </Link>
+              <div className="flex gap-1.5 pt-1">
+                <Link
+                  href={`/merchants/${m.id}`}
+                  className="!no-underline !text-white flex-1 inline-flex items-center justify-center gap-1 h-8 px-3 rounded-md bg-blue-600 hover:bg-blue-700 text-xs font-semibold transition"
+                  style={{ color: "#fff" }}
+                >
+                  Detail
+                  <ArrowRight className="size-3" />
+                </Link>
+                <a
+                  href={`https://www.google.com/maps?q=${m.lat},${m.lng}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="!no-underline !text-slate-700 inline-flex items-center justify-center gap-1 h-8 px-3 rounded-md border border-slate-200 hover:bg-slate-50 text-xs font-semibold transition"
+                  style={{ color: "#334155" }}
+                  aria-label="Buka di Google Maps"
+                >
+                  <MapIcon className="size-3" />
+                  Maps
+                </a>
+              </div>
             </div>
           </Popup>
         </Marker>

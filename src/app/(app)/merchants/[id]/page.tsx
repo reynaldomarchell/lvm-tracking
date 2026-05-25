@@ -2,6 +2,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import {
   Building2,
+  Map,
   MapPin,
   MessageSquarePlus,
   Phone,
@@ -17,6 +18,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import { StatusStepper } from "@/components/status-stepper";
 import { StatusActions } from "@/components/status-actions";
+import { VisitDeleteButton } from "@/components/visit-delete-button";
 import { getMerchant, listVisits } from "@/lib/queries";
 import {
   BUSINESS_TYPE_LABEL,
@@ -104,9 +106,10 @@ export default async function MerchantDetailPage({ params }: Props) {
                   href={`https://www.google.com/maps?q=${merchant.lat},${merchant.lng}`}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="inline-flex items-center gap-2 text-xs font-medium text-blue-600 underline"
+                  className="flex items-center gap-2 text-blue-700 active:text-blue-900"
                 >
-                  Buka di Google Maps
+                  <Map className="size-4" />
+                  <span className="text-sm font-medium">Buka di Google Maps</span>
                 </a>
               )}
             </div>
@@ -150,10 +153,7 @@ export default async function MerchantDetailPage({ params }: Props) {
                 </p>
               </div>
               {insights.pain_points.length > 0 && (
-                <InsightRow
-                  label="Pain points"
-                  items={insights.pain_points}
-                />
+                <InsightRow label="Pain points" items={insights.pain_points} />
               )}
               {insights.current_bank.length > 0 && (
                 <InsightRow
@@ -193,10 +193,7 @@ export default async function MerchantDetailPage({ params }: Props) {
         )}
 
         {/* Add visit CTA */}
-        <Button
-          asChild
-          className="w-full h-12 bg-blue-600 hover:bg-blue-700"
-        >
+        <Button asChild className="w-full h-12 bg-blue-600 hover:bg-blue-700">
           <Link href={`/merchants/${merchant.id}/kunjungan`}>
             <MessageSquarePlus className="size-5" />
             Catat kunjungan baru
@@ -219,18 +216,21 @@ export default async function MerchantDetailPage({ params }: Props) {
               {visits.map((v) => (
                 <Card key={v.id}>
                   <CardContent className="space-y-2">
-                    <div className="flex items-center justify-between text-xs">
-                      <span className="font-medium text-slate-600">
+                    <div className="flex items-center justify-between gap-2 text-xs">
+                      <span className="font-medium text-slate-600 min-w-0 truncate">
                         {v.visitedBy ?? "Tim"} ·{" "}
                         {format(v.visitedAt, "d MMM, HH:mm", {
                           locale: idLocale,
                         })}
                       </span>
-                      {v.action && (
-                        <Badge variant="outline" className="text-[10px]">
-                          {VISIT_ACTION_LABEL[v.action]}
-                        </Badge>
-                      )}
+                      <div className="flex items-center gap-1 shrink-0">
+                        {v.action && (
+                          <Badge variant="outline" className="text-[10px]">
+                            {VISIT_ACTION_LABEL[v.action]}
+                          </Badge>
+                        )}
+                        <VisitDeleteButton visitId={v.id} />
+                      </div>
                     </div>
                     <p className="text-sm text-slate-800 whitespace-pre-wrap">
                       {v.notes}

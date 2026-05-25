@@ -12,9 +12,6 @@ export async function AppHeader({ title }: { title: string }) {
           <h1 className="text-base font-semibold text-slate-900 leading-tight">
             {title}
           </h1>
-          <p className="text-[11px] text-slate-500 leading-tight">
-            BranchX · KC Pulogadung
-          </p>
         </div>
         <div className="flex items-center gap-2">
           {session && (

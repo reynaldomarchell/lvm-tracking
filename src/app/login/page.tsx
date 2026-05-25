@@ -1,7 +1,8 @@
 "use client";
 
 import { useActionState, useState } from "react";
-import { CreditCard, Eye, EyeOff, LogIn } from "lucide-react";
+import Image from "next/image";
+import { Eye, EyeOff, LogIn } from "lucide-react";
 import { loginAction, type LoginState } from "./actions";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -23,16 +24,20 @@ export default function LoginPage() {
         className="w-full max-w-md bg-white rounded-2xl shadow-xl px-8 py-10 space-y-6"
       >
         <div className="flex flex-col items-center text-center gap-3">
-          <div className="size-14 rounded-2xl bg-blue-100 flex items-center justify-center text-blue-600">
-            <CreditCard className="size-7" />
+          <div className="size-20 rounded-2xl overflow-hidden shadow-md">
+            <Image
+              src="/logo.png"
+              alt="Livin' Merchant"
+              width={160}
+              height={160}
+              className="size-full object-cover"
+              priority
+            />
           </div>
           <div>
             <h1 className="text-2xl font-bold text-slate-900">
               Livin&apos; &amp; Merchant Tracker
             </h1>
-            <p className="text-sm text-slate-500 mt-1">
-              BranchX · KC Pulogadung
-            </p>
           </div>
         </div>
 

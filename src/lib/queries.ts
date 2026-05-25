@@ -96,15 +96,13 @@ export async function merchantsRegisteredToday(by?: string) {
 export async function followUps(): Promise<Merchant[]> {
   const tomorrow = new Date();
   tomorrow.setDate(tomorrow.getDate() - 1);
-  // Anyone who registered Livin' yesterday-or-earlier and is still waiting, OR
-  // percepatan that's still waiting, OR merchant active without delivery yet.
   const rows = await db
     .select()
     .from(merchants)
     .where(
       sql`(${merchants.status} = 'livin_waiting' and ${merchants.livinRegisteredAt} <= ${Math.floor(tomorrow.getTime() / 1000)})
           or ${merchants.status} = 'livin_percepatan'
-          or (${merchants.status} = 'merchant_active' and ${merchants.deliveryRequestedAt} is not null)`,
+          or ${merchants.status} = 'delivery_pending'`,
     )
     .orderBy(desc(merchants.updatedAt));
   return rows;

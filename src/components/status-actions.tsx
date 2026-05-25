@@ -2,66 +2,17 @@
 
 import { useTransition } from "react";
 import { toast } from "sonner";
+import { Loader2, Pencil } from "lucide-react";
 import {
-  ArrowRight,
-  CheckCircle2,
-  Clock,
-  PackageCheck,
-  Zap,
-} from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { updateStatusAction, requestDeliveryAction } from "@/app/(app)/merchants/[id]/actions";
-import type { MerchantStatus } from "@/lib/db/schema";
-
-function nextActions(
-  status: MerchantStatus,
-): Array<{
-  to: MerchantStatus | "request_delivery";
-  label: string;
-  icon: typeof ArrowRight;
-  tone?: "default" | "outline";
-}> {
-  switch (status) {
-    case "lead":
-      return [
-        {
-          to: "livin_waiting",
-          label: "Daftar Livin' (tunggu H+1)",
-          icon: Clock,
-        },
-        {
-          to: "livin_percepatan",
-          label: "Daftar Livin' + Percepatan",
-          icon: Zap,
-        },
-      ];
-    case "livin_waiting":
-    case "livin_percepatan":
-      return [
-        {
-          to: "merchant_active",
-          label: "Livin' Merchant aktif",
-          icon: CheckCircle2,
-        },
-      ];
-    case "merchant_active":
-      return [
-        {
-          to: "request_delivery",
-          label: "Minta antar kartu/QRIS",
-          icon: PackageCheck,
-          tone: "outline",
-        },
-        {
-          to: "delivered",
-          label: "Tandai selesai (kartu diantar)",
-          icon: CheckCircle2,
-        },
-      ];
-    default:
-      return [];
-  }
-}
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { updateStatusAction } from "@/app/(app)/merchants/[id]/actions";
+import { MERCHANT_STATUS, type MerchantStatus } from "@/lib/db/schema";
+import { STATUS_LABEL } from "@/lib/constants";
 
 export function StatusActions({
   merchantId,
@@ -71,49 +22,50 @@ export function StatusActions({
   status: MerchantStatus;
 }) {
   const [pending, start] = useTransition();
-  const actions = nextActions(status);
-  if (actions.length === 0) return null;
+
+  function changeStatus(next: MerchantStatus) {
+    if (next === status) return;
+    start(async () => {
+      try {
+        await updateStatusAction(merchantId, next);
+        toast.success("Status diperbarui.");
+      } catch (e) {
+        toast.error(
+          e instanceof Error ? e.message : "Gagal memperbarui status.",
+        );
+      }
+    });
+  }
 
   return (
     <div className="space-y-2">
-      <p className="text-xs font-semibold text-slate-500 uppercase tracking-wide">
-        Lanjutkan ke tahap
+      <div className="flex items-center justify-between">
+        <p className="text-xs font-semibold text-slate-500 uppercase tracking-wide inline-flex items-center gap-1.5">
+          <Pencil className="size-3.5" />
+          Ubah tahap pipeline
+        </p>
+        {pending && <Loader2 className="size-3.5 animate-spin text-slate-400" />}
+      </div>
+      <Select
+        value={status}
+        onValueChange={(v) => changeStatus(v as MerchantStatus)}
+        disabled={pending}
+      >
+        <SelectTrigger className="h-11 w-full">
+          <SelectValue />
+        </SelectTrigger>
+        <SelectContent>
+          {MERCHANT_STATUS.map((s) => (
+            <SelectItem key={s} value={s}>
+              {STATUS_LABEL[s]}
+            </SelectItem>
+          ))}
+        </SelectContent>
+      </Select>
+      <p className="text-[11px] text-slate-400 leading-relaxed">
+        Pilih tahap berikutnya untuk maju, atau pilih tahap sebelumnya untuk
+        koreksi. Update langsung tersimpan.
       </p>
-      {actions.map((action) => {
-        const Icon = action.icon;
-        return (
-          <Button
-            key={action.to}
-            disabled={pending}
-            variant={action.tone ?? "default"}
-            className={
-              action.tone === "outline"
-                ? "w-full h-11 justify-start"
-                : "w-full h-11 justify-start bg-blue-600 hover:bg-blue-700"
-            }
-            onClick={() =>
-              start(async () => {
-                try {
-                  if (action.to === "request_delivery") {
-                    await requestDeliveryAction(merchantId);
-                    toast.success("Permintaan antar kartu dicatat.");
-                  } else {
-                    await updateStatusAction(merchantId, action.to);
-                    toast.success("Status diperbarui.");
-                  }
-                } catch (e) {
-                  toast.error(
-                    e instanceof Error ? e.message : "Gagal memperbarui status.",
-                  );
-                }
-              })
-            }
-          >
-            <Icon className="size-4" />
-            {action.label}
-          </Button>
-        );
-      })}
     </div>
   );
 }

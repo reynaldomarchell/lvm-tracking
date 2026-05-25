@@ -28,6 +28,7 @@ export const MERCHANT_STATUS = [
   "livin_waiting",
   "livin_percepatan",
   "merchant_active",
+  "delivery_pending",
   "delivered",
 ] as const;
 

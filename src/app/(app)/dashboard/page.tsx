@@ -141,7 +141,9 @@ export default async function DashboardPage() {
             <h3 className="text-sm font-semibold text-slate-700">
               Perlu di-follow up
             </h3>
-            <span className="text-xs text-slate-400">{follows.length} merchant</span>
+            <span className="text-xs text-slate-400">
+              {follows.length} merchant
+            </span>
           </div>
           {follows.length === 0 ? (
             <Card>
@@ -152,11 +154,7 @@ export default async function DashboardPage() {
           ) : (
             <div className="space-y-2">
               {follows.slice(0, 5).map((m) => (
-                <Link
-                  key={m.id}
-                  href={`/merchants/${m.id}`}
-                  className="block"
-                >
+                <Link key={m.id} href={`/merchants/${m.id}`} className="block">
                   <Card className="hover:border-blue-300 transition">
                     <CardContent className="py-3 flex items-center justify-between gap-3">
                       <div className="min-w-0">

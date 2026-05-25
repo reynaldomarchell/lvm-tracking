@@ -153,3 +153,18 @@ export async function saveVisitAction(
   revalidatePath("/peta");
   redirect(`/merchants/${parsed.data.merchantId}`);
 }
+
+export async function deleteVisitAction(
+  visitId: string,
+): Promise<{ error?: string; ok?: boolean }> {
+  await requireSession();
+  const existing = await db
+    .select({ id: visits.id, merchantId: visits.merchantId })
+    .from(visits)
+    .where(eq(visits.id, visitId))
+    .limit(1);
+  if (!existing[0]) return { error: "Kunjungan tidak ditemukan." };
+  await db.delete(visits).where(eq(visits.id, visitId));
+  revalidatePath(`/merchants/${existing[0].merchantId}`);
+  return { ok: true };
+}

@@ -2,6 +2,7 @@
 
 import { useActionState, useState, useTransition } from "react";
 import {
+  ArrowRight,
   Loader2,
   PenLine,
   Plus,
@@ -66,8 +67,8 @@ export function VisitForm({ merchantId }: { merchantId: string }) {
           result.referrals.length;
         toast.success(
           total > 0
-            ? `Berhasil ekstrak ${total} insight.`
-            : "Catatan tersimpan; tidak ada insight spesifik ditemukan.",
+            ? `Berhasil ekstrak ${total} insight. Periksa lalu klik "Simpan kunjungan".`
+            : "Gemini tidak menemukan insight spesifik — kamu bisa tambah manual atau langsung simpan.",
         );
       } catch (err) {
         toast.error(
@@ -78,8 +79,21 @@ export function VisitForm({ merchantId }: { merchantId: string }) {
     });
   }
 
+  // Intercept form submit: if Gemini hasn't been run yet on the current notes,
+  // run extraction first and let the user review before the actual save click.
+  function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
+    if (!extracted && notes.trim()) {
+      event.preventDefault();
+      runExtract();
+    }
+  }
+
   return (
-    <form action={formAction} className="space-y-4">
+    <form
+      action={formAction}
+      onSubmit={handleSubmit}
+      className="space-y-4"
+    >
       <input type="hidden" name="merchantId" value={merchantId} />
       <input
         type="hidden"
@@ -124,24 +138,22 @@ export function VisitForm({ merchantId }: { merchantId: string }) {
             </p>
           </div>
 
-          <Button
-            type="button"
-            variant="outline"
-            disabled={extracting || !notes.trim()}
-            onClick={runExtract}
-            className="w-full h-11 border-blue-300 text-blue-700 hover:bg-blue-50"
-          >
-            {extracting ? (
-              <Loader2 className="size-4 animate-spin" />
-            ) : (
-              <Sparkles className="size-4" />
-            )}
-            {extracting
-              ? "Mengekstrak…"
-              : extracted
-                ? "Ekstrak ulang dengan Gemini"
-                : "Ekstrak insight dengan Gemini"}
-          </Button>
+          {extracted && (
+            <Button
+              type="button"
+              variant="outline"
+              disabled={extracting || !notes.trim()}
+              onClick={runExtract}
+              className="w-full h-11 border-blue-300 text-blue-700 hover:bg-blue-50"
+            >
+              {extracting ? (
+                <Loader2 className="size-4 animate-spin" />
+              ) : (
+                <Sparkles className="size-4" />
+              )}
+              {extracting ? "Mengekstrak…" : "Ekstrak ulang dengan Gemini"}
+            </Button>
+          )}
         </CardContent>
       </Card>
 
@@ -208,16 +220,32 @@ export function VisitForm({ merchantId }: { merchantId: string }) {
 
       <Button
         type="submit"
-        disabled={saving}
+        disabled={saving || extracting || !notes.trim()}
         className="w-full h-12 bg-blue-600 hover:bg-blue-700 text-base font-semibold"
       >
-        {saving ? (
+        {saving || extracting ? (
           <Loader2 className="size-4 animate-spin" />
-        ) : (
+        ) : extracted ? (
           <Save className="size-4" />
+        ) : (
+          <Sparkles className="size-4" />
         )}
-        {saving ? "Menyimpan…" : "Simpan kunjungan"}
+        {saving
+          ? "Menyimpan…"
+          : extracting
+            ? "Mengekstrak insight…"
+            : extracted
+              ? "Simpan kunjungan"
+              : "Ekstrak insight & lanjut"}
+        {!saving && !extracting && !extracted && (
+          <ArrowRight className="size-4" />
+        )}
       </Button>
+      {!extracted && notes.trim() && !extracting && (
+        <p className="text-[11px] text-center text-slate-500">
+          Gemini akan ekstrak insight dulu, lalu kamu bisa periksa &amp; simpan.
+        </p>
+      )}
       <p className="text-xs text-center text-slate-400">
         Bisa langsung simpan tanpa ekstrak — insight bisa diisi manual nanti.
       </p>

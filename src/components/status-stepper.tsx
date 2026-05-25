@@ -4,8 +4,9 @@ import type { MerchantStatus } from "@/lib/db/schema";
 
 const STEPS: Array<{ key: MerchantStatus; label: string }> = [
   { key: "lead", label: "Lead" },
-  { key: "livin_waiting", label: "Livin' aktif" },
-  { key: "merchant_active", label: "Merchant aktif" },
+  { key: "livin_waiting", label: "Livin'" },
+  { key: "merchant_active", label: "Merchant" },
+  { key: "delivery_pending", label: "Antar" },
   { key: "delivered", label: "Selesai" },
 ];
 
@@ -14,7 +15,8 @@ const STATUS_INDEX: Record<MerchantStatus, number> = {
   livin_waiting: 1,
   livin_percepatan: 1,
   merchant_active: 2,
-  delivered: 3,
+  delivery_pending: 3,
+  delivered: 4,
 };
 
 export function StatusStepper({ status }: { status: MerchantStatus }) {

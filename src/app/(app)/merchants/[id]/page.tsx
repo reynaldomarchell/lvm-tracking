@@ -5,7 +5,9 @@ import {
   Map,
   MapPin,
   MessageSquarePlus,
+  Pencil,
   Phone,
+  Share2,
   Sparkles,
   Zap,
 } from "lucide-react";
@@ -69,12 +71,24 @@ export default async function MerchantDetailPage({ params }: Props) {
                   </p>
                 )}
               </div>
-              <Badge
-                className={`${STATUS_COLOR[merchant.status]} border shrink-0`}
-                variant="outline"
-              >
-                {STATUS_LABEL[merchant.status]}
-              </Badge>
+              <div className="flex items-center gap-1 shrink-0">
+                <Badge
+                  className={`${STATUS_COLOR[merchant.status]} border`}
+                  variant="outline"
+                >
+                  {STATUS_LABEL[merchant.status]}
+                </Badge>
+                <Button
+                  asChild
+                  variant="ghost"
+                  size="icon-sm"
+                  aria-label="Edit merchant"
+                >
+                  <Link href={`/merchants/${merchant.id}/edit`}>
+                    <Pencil className="size-3.5" />
+                  </Link>
+                </Button>
+              </div>
             </div>
 
             <Separator />
@@ -116,6 +130,86 @@ export default async function MerchantDetailPage({ params }: Props) {
           </CardContent>
         </Card>
 
+        {/* AI Insights — surfaced first so the team sees customer context immediately */}
+        {hasInsights && (
+          <Card className="overflow-hidden border-blue-200 bg-gradient-to-br from-blue-50 via-indigo-50/60 to-white shadow-sm">
+            <CardContent className="space-y-3">
+              <div className="flex items-center gap-2.5">
+                <div className="size-9 rounded-xl bg-blue-600 text-white flex items-center justify-center shadow-md shadow-blue-600/30">
+                  <Sparkles className="size-5" />
+                </div>
+                <div className="min-w-0">
+                  <p className="text-base font-bold text-slate-900 leading-tight">
+                    Insight Pelanggan
+                  </p>
+                  <p className="text-[11px] text-slate-500">
+                    Diekstrak otomatis dari catatan kunjungan
+                  </p>
+                </div>
+              </div>
+
+              <div className="space-y-2">
+                {insights.pain_points.length > 0 && (
+                  <InsightRow label="Pain points" items={insights.pain_points} />
+                )}
+                {insights.current_bank.length > 0 && (
+                  <InsightRow
+                    label="Bank yang dipakai"
+                    items={insights.current_bank}
+                  />
+                )}
+                {insights.current_merchant_app.length > 0 && (
+                  <InsightRow
+                    label="Merchant app saat ini"
+                    items={insights.current_merchant_app}
+                  />
+                )}
+                {insights.customer_needs.length > 0 && (
+                  <InsightRow
+                    label="Kebutuhan / pertimbangan"
+                    items={insights.customer_needs}
+                  />
+                )}
+              </div>
+
+              {insights.referrals.length > 0 && (
+                <div className="rounded-lg border border-amber-200 bg-gradient-to-br from-amber-50 to-orange-50 p-3 space-y-2">
+                  <div className="flex items-center gap-2">
+                    <div className="size-7 rounded-md bg-amber-500 text-white flex items-center justify-center">
+                      <Share2 className="size-4" />
+                    </div>
+                    <div>
+                      <p className="text-sm font-semibold text-amber-900 leading-tight">
+                        Referral merchant lain
+                      </p>
+                      <p className="text-[10px] text-amber-700/80">
+                        Lead baru yang direkomendasikan customer
+                      </p>
+                    </div>
+                  </div>
+                  <ul className="space-y-1.5">
+                    {insights.referrals.map((r, i) => (
+                      <li
+                        key={i}
+                        className="bg-white/70 border border-amber-100 rounded-md px-2.5 py-1.5"
+                      >
+                        <p className="text-sm font-medium text-slate-900 leading-tight">
+                          {r.name}
+                        </p>
+                        {r.note && (
+                          <p className="text-xs text-slate-600 mt-0.5">
+                            {r.note}
+                          </p>
+                        )}
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              )}
+            </CardContent>
+          </Card>
+        )}
+
         {/* Pipeline stepper */}
         <Card>
           <CardContent className="space-y-3">
@@ -140,57 +234,11 @@ export default async function MerchantDetailPage({ params }: Props) {
         </Card>
 
         {/* Status actions */}
-        <StatusActions merchantId={merchant.id} status={merchant.status} />
-
-        {/* AI Insights */}
-        {hasInsights && (
-          <Card className="border-blue-100 bg-blue-50/40">
-            <CardContent className="space-y-3">
-              <div className="flex items-center gap-2">
-                <Sparkles className="size-4 text-blue-600" />
-                <p className="text-sm font-semibold text-blue-800">
-                  Insight pelanggan (dari catatan)
-                </p>
-              </div>
-              {insights.pain_points.length > 0 && (
-                <InsightRow label="Pain points" items={insights.pain_points} />
-              )}
-              {insights.current_bank.length > 0 && (
-                <InsightRow
-                  label="Bank yang dipakai"
-                  items={insights.current_bank}
-                />
-              )}
-              {insights.current_merchant_app.length > 0 && (
-                <InsightRow
-                  label="Merchant app saat ini"
-                  items={insights.current_merchant_app}
-                />
-              )}
-              {insights.customer_needs.length > 0 && (
-                <InsightRow
-                  label="Kebutuhan / pertimbangan"
-                  items={insights.customer_needs}
-                />
-              )}
-              {insights.referrals.length > 0 && (
-                <div>
-                  <p className="text-xs font-medium text-slate-600 mb-1">
-                    Referral merchant lain
-                  </p>
-                  <ul className="space-y-1">
-                    {insights.referrals.map((r, i) => (
-                      <li key={i} className="text-sm text-slate-700">
-                        • {r.name}
-                        {r.note ? ` — ${r.note}` : ""}
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-              )}
-            </CardContent>
-          </Card>
-        )}
+        <Card>
+          <CardContent>
+            <StatusActions merchantId={merchant.id} status={merchant.status} />
+          </CardContent>
+        </Card>
 
         {/* Add visit CTA */}
         <Button asChild className="w-full h-12 bg-blue-600 hover:bg-blue-700">

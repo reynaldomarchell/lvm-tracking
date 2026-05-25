@@ -1,6 +1,5 @@
 "use client";
 
-import { useRouter } from "next/navigation";
 import {
   Dialog,
   DialogContent,
@@ -11,12 +10,14 @@ import {
 import { AddMerchantForm } from "@/app/(app)/tambah/add-merchant-form";
 
 export function AddMerchantDialog({ exitTo = "/daftar" }: { exitTo?: string }) {
-  const router = useRouter();
+  function close() {
+    window.location.href = exitTo;
+  }
   return (
     <Dialog
       open
       onOpenChange={(open) => {
-        if (!open) router.push(exitTo);
+        if (!open) close();
       }}
     >
       <DialogContent className="max-h-[92vh] overflow-y-auto sm:max-w-xl bg-slate-50">

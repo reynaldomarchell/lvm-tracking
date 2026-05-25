@@ -1,7 +1,6 @@
 "use client";
 
 import Link from "next/link";
-import { useRouter } from "next/navigation";
 import { ChevronLeft } from "lucide-react";
 import { ResponsiveSheet } from "@/components/responsive-sheet";
 
@@ -18,13 +17,19 @@ export function MerchantDetailSheet({
   backHref?: string;
   children: React.ReactNode;
 }) {
-  const router = useRouter();
+  function close() {
+    // Soft nav (router.push/replace) leaves the parallel-route @modal slot
+    // stuck on its cached state — even with default.tsx files, since defaults
+    // only kick in on hard navigation. Force a hard nav so the entire React
+    // tree (modal slot included) resets.
+    window.location.href = exitTo;
+  }
   return (
     <ResponsiveSheet
       open
       title={title}
       onOpenChange={(open) => {
-        if (!open) router.push(exitTo);
+        if (!open) close();
       }}
     >
       <div className="relative px-4 pt-12 pb-10">

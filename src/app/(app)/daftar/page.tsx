@@ -1,15 +1,15 @@
 import { Suspense } from "react";
 import Link from "next/link";
-import { Plus, Search } from "lucide-react";
+import { Plus } from "lucide-react";
 import { PageContainer } from "@/components/app-header";
 import { MerchantCard } from "@/components/merchant-card";
 import { Card, CardContent } from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { listMerchants } from "@/lib/queries";
 import { STATUS_COLOR, STATUS_ORDER, STATUS_SHORT } from "@/lib/constants";
 import { MERCHANT_STATUS, type MerchantStatus } from "@/lib/db/schema";
+import { SearchInput } from "./search-input";
 
 export const dynamic = "force-dynamic";
 
@@ -30,16 +30,7 @@ export default async function DaftarPage({ searchParams }: PageProps) {
   return (
     <PageContainer title="Daftar Merchant">
       <div className="space-y-4">
-        <form className="relative">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 size-4 text-slate-400" />
-          <Input
-            name="q"
-            defaultValue={search ?? ""}
-            placeholder="Cari nama, pemilik, alamat…"
-            className="pl-9 h-11"
-          />
-          {status && <input type="hidden" name="status" value={status} />}
-        </form>
+        <SearchInput />
 
         <div className="-mx-4 px-4 overflow-x-auto">
           <div className="flex gap-2 pb-1 w-max">

@@ -24,11 +24,15 @@ bun install
 Salin `.env.example` ke `.env.local` lalu isi:
 
 ```env
-JWT_SECRET=string-acak-minimal-32-karakter
-GEMINI_API_KEY=AIzaSy...
-CLOUDFLARE_ACCOUNT_ID=...
-CLOUDFLARE_D1_DATABASE_ID=a460f898-8599-46b3-ae04-7fbfb7ff9739
-CLOUDFLARE_D1_TOKEN=...
+JWT_SECRET=ganti-dengan-string-acak-minimal-32-karakter
+
+# Gemini
+GEMINI_API_KEY=your-gemini-api-key
+
+# Cloudflare D1 (HTTP API)
+CLOUDFLARE_ACCOUNT_ID=your-cloudflare-account-id
+CLOUDFLARE_D1_DATABASE_ID=your-cloudflare-d1-database-id
+CLOUDFLARE_D1_TOKEN=your-cloudflare-api-token-with-d1-edit-permission
 
 # Hanya dipakai untuk membuat admin pertama via `bun run db:seed`
 ADMIN_USERNAME=admin

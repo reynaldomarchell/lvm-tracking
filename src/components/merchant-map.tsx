@@ -15,8 +15,9 @@ import {
 import { Button } from "@/components/ui/button";
 import type { Merchant } from "@/lib/db/schema";
 
-// Pulogadung approx center
-const DEFAULT_CENTER: [number, number] = [-6.1893, 106.9027];
+// Jakarta center — covers DKI Jakarta area at default zoom.
+const JAKARTA_CENTER: [number, number] = [-6.2088, 106.8456];
+const JAKARTA_ZOOM = 11;
 
 function pinIcon(color: string) {
   const svg = `
@@ -68,14 +69,10 @@ export function MerchantMap({ merchants }: { merchants: Merchant[] }) {
       m.lat != null && m.lng != null,
   );
 
-  const center: [number, number] = withCoords.length
-    ? [withCoords[0].lat, withCoords[0].lng]
-    : DEFAULT_CENTER;
-
   return (
     <MapContainer
-      center={center}
-      zoom={14}
+      center={JAKARTA_CENTER}
+      zoom={JAKARTA_ZOOM}
       scrollWheelZoom
       className="h-full w-full"
     >

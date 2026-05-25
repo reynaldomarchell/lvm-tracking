@@ -7,9 +7,18 @@ import { Badge } from "@/components/ui/badge";
 import { STATUS_COLOR, STATUS_SHORT, BUSINESS_TYPE_LABEL } from "@/lib/constants";
 import type { Merchant } from "@/lib/db/schema";
 
-export function MerchantCard({ merchant }: { merchant: Merchant }) {
+export function MerchantCard({
+  merchant,
+  from,
+}: {
+  merchant: Merchant;
+  from?: string;
+}) {
+  const href = from
+    ? `/merchants/${merchant.id}?from=${encodeURIComponent(from)}`
+    : `/merchants/${merchant.id}`;
   return (
-    <Link href={`/merchants/${merchant.id}`} className="block">
+    <Link href={href} className="block">
       <Card className="hover:border-blue-300 active:bg-slate-50 transition">
         <CardContent className="py-3 space-y-2">
           <div className="flex items-start justify-between gap-2">

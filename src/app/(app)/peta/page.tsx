@@ -22,7 +22,7 @@ export default async function PetaPage() {
           <MerchantMapClient merchants={merchants} />
         </div>
         {/* Legend — anchored bottom-left to avoid Leaflet's top-left zoom controls and the floating + button */}
-        <div className="absolute bottom-24 left-2 right-2 z-[800] pointer-events-none flex justify-center">
+        <div className="absolute bottom-24 lg:bottom-6 left-2 right-2 z-[800] pointer-events-none flex justify-center">
           <div className="bg-white/95 shadow-lg rounded-full px-3 py-1.5 text-[11px] flex flex-wrap gap-x-3 gap-y-1 items-center pointer-events-auto max-w-full">
             {STATUS_ORDER.map((s) => (
               <span key={s} className="inline-flex items-center gap-1">

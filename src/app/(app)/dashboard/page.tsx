@@ -154,7 +154,11 @@ export default async function DashboardPage() {
           ) : (
             <div className="space-y-2">
               {follows.slice(0, 5).map((m) => (
-                <Link key={m.id} href={`/merchants/${m.id}`} className="block">
+                <Link
+                  key={m.id}
+                  href={`/merchants/${m.id}?from=${encodeURIComponent("/dashboard")}`}
+                  className="block"
+                >
                   <Card className="hover:border-blue-300 transition">
                     <CardContent className="py-3 flex items-center justify-between gap-3">
                       <div className="min-w-0">

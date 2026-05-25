@@ -2,6 +2,7 @@ import Link from "next/link";
 import { ChevronLeft, LogOut } from "lucide-react";
 import { getSession } from "@/lib/auth";
 import { Button } from "@/components/ui/button";
+import { HeaderSearch } from "@/components/header-search";
 
 export async function AppHeader({
   title,
@@ -13,8 +14,9 @@ export async function AppHeader({
   const session = await getSession();
   return (
     <header className="sticky top-0 z-30 border-b bg-white/95 backdrop-blur supports-[backdrop-filter]:bg-white/70">
-      <div className="mx-auto max-w-2xl px-4 h-14 flex items-center justify-between gap-2">
-        <div className="flex items-center gap-1 min-w-0">
+      <div className="mx-auto max-w-2xl lg:max-w-none lg:mx-0 lg:px-6 px-4 h-14 flex items-center justify-between gap-3">
+        {/* Mobile: back + title. Desktop: hidden (sidebar shows page context). */}
+        <div className="flex items-center gap-1 min-w-0 lg:hidden">
           {backHref && (
             <Button
               asChild
@@ -32,6 +34,12 @@ export async function AppHeader({
             {title}
           </h1>
         </div>
+
+        {/* Desktop: search bar takes the lead position. */}
+        <div className="hidden lg:flex flex-1 max-w-xl">
+          <HeaderSearch />
+        </div>
+
         <div className="flex items-center gap-2 shrink-0">
           {session && (
             <span className="text-xs font-medium text-slate-500 hidden sm:inline">
@@ -66,7 +74,7 @@ export function PageContainer({
   return (
     <div className="flex flex-1 flex-col">
       <AppHeader title={title} backHref={backHref} />
-      <main className="mx-auto w-full max-w-2xl flex-1 px-4 py-4 pb-24">
+      <main className="mx-auto w-full max-w-2xl flex-1 px-4 py-4 pb-24 lg:pb-8">
         {children}
       </main>
     </div>

@@ -75,7 +75,7 @@ export default async function DaftarPage({ searchParams }: PageProps) {
           ) : (
             <div className="space-y-2">
               {merchants.map((m) => (
-                <MerchantCard key={m.id} merchant={m} />
+                <MerchantCard key={m.id} merchant={m} from="/daftar" />
               ))}
             </div>
           )}

@@ -35,9 +35,10 @@ const ADMIN_ITEM: NavItem = {
 export function BottomNav({ isAdmin = false }: { isAdmin?: boolean }) {
   const pathname = usePathname();
   const items = isAdmin ? [...BASE_ITEMS, ADMIN_ITEM] : BASE_ITEMS;
+  const tambahHref = `/tambah?from=${encodeURIComponent(pathname)}`;
 
   return (
-    <nav className="sticky bottom-0 z-[1000] border-t bg-white/95 backdrop-blur supports-[backdrop-filter]:bg-white/70">
+    <nav className="sticky bottom-0 z-[1000] border-t bg-white/95 backdrop-blur supports-[backdrop-filter]:bg-white/70 lg:hidden">
       <div className="mx-auto flex max-w-2xl items-stretch justify-around px-2 pt-1 pb-[max(0.5rem,env(safe-area-inset-bottom))]">
         {items.map((item) => {
           const Icon = item.icon;
@@ -48,7 +49,7 @@ export function BottomNav({ isAdmin = false }: { isAdmin?: boolean }) {
             return (
               <Link
                 key={item.href}
-                href={item.href}
+                href={tambahHref}
                 className="-mt-6 flex flex-col items-center gap-1"
               >
                 <span className="size-14 rounded-full bg-blue-600 text-white shadow-lg shadow-blue-600/30 flex items-center justify-center transition active:scale-95">

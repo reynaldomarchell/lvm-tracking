@@ -13,7 +13,7 @@ export default async function EditMerchantPage({ params }: Props) {
   if (!merchant) notFound();
 
   return (
-    <PageContainer title="Edit Merchant">
+    <PageContainer title="Edit Merchant" backHref={`/merchants/${id}`}>
       <div className="space-y-4">
         <p className="text-sm text-slate-600">
           Ubah info merchant {merchant.name}. Pipeline status &amp; riwayat

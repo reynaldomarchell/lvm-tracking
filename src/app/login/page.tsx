@@ -36,7 +36,7 @@ export default function LoginPage() {
           </div>
           <div>
             <h1 className="text-2xl font-bold text-slate-900">
-              Livin&apos; &amp; Merchant Tracker
+              Livin&apos; Merchant Tracker
             </h1>
           </div>
         </div>

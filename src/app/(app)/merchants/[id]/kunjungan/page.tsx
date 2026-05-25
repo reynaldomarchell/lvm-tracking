@@ -18,7 +18,7 @@ export default async function VisitPage({ params, searchParams }: Props) {
   if (!merchant) notFound();
 
   return (
-    <PageContainer title="Catat Kunjungan">
+    <PageContainer title="Catat Kunjungan" backHref={`/merchants/${id}`}>
       <div className="space-y-4">
         {isNew && (
           <p className="text-sm text-blue-700 bg-blue-50 border border-blue-100 rounded-md p-2 text-center">

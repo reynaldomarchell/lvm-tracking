@@ -14,7 +14,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Livin' & Merchant Tracker — BranchX Pulogadung",
+  title: "Livin' Merchant Tracker",
   description:
     "Pencatat akuisisi Livin' & Livin' Merchant untuk tim BranchX KC Pulogadung.",
 };

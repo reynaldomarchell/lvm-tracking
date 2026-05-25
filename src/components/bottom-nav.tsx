@@ -2,18 +2,39 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { LayoutDashboard, List, Map, Plus } from "lucide-react";
+import {
+  LayoutDashboard,
+  List,
+  Map,
+  Plus,
+  Shield,
+  type LucideIcon,
+} from "lucide-react";
 import { cn } from "@/lib/utils";
 
-const items = [
+type NavItem = {
+  href: string;
+  label: string;
+  icon: LucideIcon;
+  primary?: boolean;
+};
+
+const BASE_ITEMS: NavItem[] = [
   { href: "/dashboard", label: "Beranda", icon: LayoutDashboard },
   { href: "/daftar", label: "Daftar", icon: List },
   { href: "/tambah", label: "Tambah", icon: Plus, primary: true },
   { href: "/peta", label: "Peta", icon: Map },
 ];
 
-export function BottomNav() {
+const ADMIN_ITEM: NavItem = {
+  href: "/admin/users",
+  label: "Admin",
+  icon: Shield,
+};
+
+export function BottomNav({ isAdmin = false }: { isAdmin?: boolean }) {
   const pathname = usePathname();
+  const items = isAdmin ? [...BASE_ITEMS, ADMIN_ITEM] : BASE_ITEMS;
 
   return (
     <nav className="sticky bottom-0 z-[1000] border-t bg-white/95 backdrop-blur supports-[backdrop-filter]:bg-white/70">

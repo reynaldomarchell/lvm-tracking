@@ -55,7 +55,7 @@ export default async function MerchantDetailPage({ params }: Props) {
     0;
 
   return (
-    <PageContainer title={merchant.name}>
+    <PageContainer title={merchant.name} backHref="/daftar">
       <div className="space-y-5">
         {/* Header card */}
         <Card>
